@@ -23,7 +23,7 @@ export const postCard = (req: Request, res: Response) => {
   const owner = req.user._id;
 
   return Card.create({ name, link, owner })
-    .then((card) => res.send(`card created : ${card}`))
+    .then((card) => res.send({ card }))
     .catch((err) => errorHandler(err, res, {
       invaild: 'Переданы некорректные данные при создании карточки',
     }));
@@ -33,7 +33,8 @@ export const deleteCard = (req: Request, res: Response) => {
   const { id } = req.params;
 
   return Card.findByIdAndDelete(id)
-    .then(() => res.send('card deleted'))
+    .orFail()
+    .then(() => res.send({ message: 'card deleted' }))
     .catch((err) => errorHandler(err, res, {
       notFound: cardNotFound,
     }));
@@ -43,7 +44,8 @@ export const likeCard = (req: Request, res: Response) => {
   const { id } = req.params;
   const { _id } = req.user;
   return Card.findByIdAndUpdate(id, { $addToSet: { likes: _id } }, { new: true })
-    .then((card) => res.send(card))
+    .orFail()
+    .then((card) => res.send({ card }))
     .catch((err) => errorHandler(err, res, {
       notFound: cardNotFound,
       invaild: 'Переданы некорректные данные для постановки лайка',
@@ -59,7 +61,8 @@ export const dislikeCard = (req: Request, res: Response) => {
     { $pull: { likes: _id } },
     { new: true },
   )
-    .then((card) => res.send(card))
+    .orFail()
+    .then((card) => res.send({ card }))
     .catch((err) => errorHandler(err, res, {
       notFound: cardNotFound,
       invaild: 'Переданы некорректные данные для удаления лайка',

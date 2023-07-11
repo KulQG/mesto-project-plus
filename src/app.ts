@@ -20,8 +20,6 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://127.0.0.1/mestodb');
 
-app.use('/users', usersRouter);
-
 app.use((req: Request, _res: Response, next: NextFunction) => {
   req.user = {
     _id: '64abe721f1d984f0ee247ed3',
@@ -30,7 +28,13 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
+app.use('/users', usersRouter);
+
 app.use('/cards', cardsRouter);
+
+app.use((_req: Request, res: Response) => {
+  res.status(404).send({ message: 'Not found' });
+});
 
 app.listen(3000, () => {
   // eslint-disable-next-line no-console
