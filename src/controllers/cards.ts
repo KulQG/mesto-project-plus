@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ObjectId, Schema } from 'mongoose';
+// import { ObjectId, Schema } from 'mongoose';
 import Card from '../models/card';
 import { errorHandler, cardNotFound } from '../utils/constants';
 
@@ -41,8 +41,8 @@ export const deleteCard = (req: Request, res: Response) => {
 
 export const likeCard = (req: Request, res: Response) => {
   const { id } = req.params;
-
-  return Card.findByIdAndUpdate(id, { $addToSet: { likes: id } }, { new: true })
+  const { _id } = req.user;
+  return Card.findByIdAndUpdate(id, { $addToSet: { likes: _id } }, { new: true })
     .then((card) => res.send(card))
     .catch((err) => errorHandler(err, res, {
       notFound: cardNotFound,
@@ -52,10 +52,11 @@ export const likeCard = (req: Request, res: Response) => {
 
 export const dislikeCard = (req: Request, res: Response) => {
   const { id } = req.params;
+  const { _id } = req.user;
 
   return Card.findByIdAndUpdate(
     id,
-    { $pull: { likes: id } },
+    { $pull: { likes: _id } },
     { new: true },
   )
     .then((card) => res.send(card))
