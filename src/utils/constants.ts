@@ -16,5 +16,5 @@ export const errorHandler = (err: any, res: Response, messages: TMessages) => {
   if (err.name === 'DocumentNotFoundError') res.status(NOT_FOUND_ERROR).send({ message: messages.notFound || 'Не найдено' });
   else if (err.name === 'CastError' || err.name === 'ValidationError') {
     res.status(NOT_CORRECT_ERROR).send({ message: messages.invaild || 'Введены некорректные данные' });
-  } else res.status(DEF_ERROR).send(`Произошла ошибка: ${err.name}`);
+  } else res.status(DEF_ERROR).send({ message: `Произошла ошибка: ${err.name}` });
 };
