@@ -1,17 +1,20 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+// import { JwtPayload } from 'jsonwebtoken';
+import { login, postUser } from './controllers/users';
+import auth from './middlewares/auth';
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
 
-declare global {
-  // eslint-disable-next-line no-unused-vars
-  namespace Express {
-    // eslint-disable-next-line no-shadow, no-unused-vars
-    interface Request {
-      user: { _id: string}
-    }
-  }
-}
+// declare global {
+//   // eslint-disable-next-line no-unused-vars
+//   namespace Express {
+//     // eslint-disable-next-line no-shadow, no-unused-vars
+//     interface Request {
+//       user: { _id: string | JwtPayload}
+//     }
+//   }
+// }
 
 const app = express();
 
@@ -20,16 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://127.0.0.1/mestodb');
 
-app.use((req: Request, _res: Response, next: NextFunction) => {
-  req.user = {
-    _id: '64abe721f1d984f0ee247ed3',
-  };
+app.post('/signup', postUser);
+app.post('/signin', login);
 
-  next();
-});
+app.use(auth);
 
 app.use('/users', usersRouter);
-
 app.use('/cards', cardsRouter);
 
 app.use((_req: Request, res: Response) => {
