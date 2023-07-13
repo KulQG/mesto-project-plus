@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 // import { JwtPayload } from 'jsonwebtoken';
+import errors from './middlewares/errors';
 import { login, postUser } from './controllers/users';
 import auth from './middlewares/auth';
 import usersRouter from './routes/users';
@@ -34,6 +35,8 @@ app.use('/cards', cardsRouter);
 app.use((_req: Request, res: Response) => {
   res.status(404).send({ message: 'Not found' });
 });
+
+app.use(errors);
 
 app.listen(3000, () => {
   // eslint-disable-next-line no-console
