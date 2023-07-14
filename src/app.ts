@@ -1,21 +1,11 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-// import { JwtPayload } from 'jsonwebtoken';
-import errors from './middlewares/errors';
-import { login, postUser } from './controllers/users';
+import { errors } from 'celebrate';
+import errorsMiddleware from './middlewares/errors';
+import authRouter from './routes/auth';
 import auth from './middlewares/auth';
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
-
-// declare global {
-//   // eslint-disable-next-line no-unused-vars
-//   namespace Express {
-//     // eslint-disable-next-line no-shadow, no-unused-vars
-//     interface Request {
-//       user: { _id: string | JwtPayload}
-//     }
-//   }
-// }
 
 const app = express();
 
@@ -24,8 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://127.0.0.1/mestodb');
 
-app.post('/signup', postUser);
-app.post('/signin', login);
+app.use('/', authRouter);
 
 app.use(auth);
 
@@ -36,7 +25,9 @@ app.use((_req: Request, res: Response) => {
   res.status(404).send({ message: 'Not found' });
 });
 
-app.use(errors);
+app.use(errors());
+
+app.use(errorsMiddleware);
 
 app.listen(3000, () => {
   // eslint-disable-next-line no-console

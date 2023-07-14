@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { celebrate, Joi } from 'celebrate';
 import {
   getMeInfo,
   getUser, getUsers, patchAvatar, patchUser,
@@ -6,14 +7,44 @@ import {
 
 const router = Router();
 
-router.get('/', getUsers);
+router.get('/', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().alphanum().required(),
+  }).unknown(true),
+}), getUsers);
 
-router.get('/me', getMeInfo); // заглушка, чтобы посмотреть не от контроллера ли ошибка
+router.get('/me', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().alphanum().required(),
+  }).unknown(true),
+}), getMeInfo);
 
-router.patch('/me', patchUser);
+router.patch('/me', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().alphanum().required(),
+  }).unknown(true),
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().alphanum().min(20).max(200),
+  }),
+}), patchUser);
 
-router.patch('/me/avatar', patchAvatar);
+router.patch('/me/avatar', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().alphanum().required(),
+  }).unknown(true),
+  body: Joi.object().keys({
+    avatar: Joi.string().alphanum().min(7).required(),
+  }),
+}), patchAvatar);
 
-router.get('/:id', getUser);
+router.get('/:id', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().alphanum().required(),
+  }).unknown(true),
+  params: Joi.object().keys({
+    id: Joi.string().alphanum().length(24),
+  }),
+}), getUser);
 
 export default router;
