@@ -14,17 +14,16 @@ type TMessages = {
   invaild?: string,
 }
 
+const getNotFoundError = (message: string) => new NotFoundError(message);
+const getInvalidError = (message: string) => new InvalidError(message);
+const getDublicateError = (message: string) => new DublicateError(message);
+
 export const errorHandler = (err: any, next: NextFunction, messages: TMessages) => {
-  // eslint-disable-next-line no-new
-  if (err.name === 'DocumentNotFoundError') next(new NotFoundError(messages.notFound || 'Файл не найден'));
+  if (err.name === 'DocumentNotFoundError') next(getNotFoundError(messages.notFound || 'Файл не найден'));
   else if (err.name === 'CastError' || err.name === 'ValidationError') {
-    // eslint-disable-next-line no-new
-    next(new InvalidError(messages.invaild || 'Введены неккоректные данные'));
-  // eslint-disable-next-line no-new
-  } else if (err.code === 11000) next(new DublicateError('Такой email уже существует'));
+    next(getInvalidError(messages.invaild || 'Введены неккоректные данные'));
+  } else if (err.code === 11000) next(getDublicateError('Такой email уже существует'));
   else next(new ServerError('На сервере произошла ошибка'));
 };
 
-// export const authErrorHandler = (res: Response, err?: any) => {
-//   res.status(401).send({ message: err.massage || userAuthError });
-// };
+export const extractBearerToken = (header: string) => header.replace('Bearer ', '');

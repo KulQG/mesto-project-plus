@@ -6,60 +6,46 @@ import {
 
 const router = Router();
 
-router.get('/', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
-}), getCards);
+router.get('/', getCards);
 
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24).required(),
   }),
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
 }), getCard);
 
 router.post('/', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
   body: Joi.object().keys({
     name: Joi.string()
       .alphanum()
       .min(2)
       .max(30)
       .required(),
-    link: Joi.string().alphanum().min(7).required(),
+    link: Joi.string().uri({
+      scheme: [
+        // eslint-disable-next-line no-useless-escape
+        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/,
+      ],
+    }).required(),
     owner: Joi.string().alphanum().length(24).required(),
   }),
 }), postCard);
 
 router.delete('/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24).required(),
   }),
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
 }), deleteCard);
 
 router.put('/:id/likes', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24).required(),
   }),
 }), likeCard);
 
 router.delete('/:id/likes', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24).required(),
   }),
 }), dislikeCard);
 

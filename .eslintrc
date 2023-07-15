@@ -9,23 +9,14 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".ts",
-          ".js",
-          ".json"
-        ]
+        "extensions": [".ts", ".js", ".json"]
       }
     },
-    "import/extensions": [
-      ".js",
-      ".ts"
-    ]
+    "import/extensions": [".js", ".ts"]
   },
   "rules": {
     "import/extensions": [
@@ -36,12 +27,6 @@
         "ts": "never"
       }
     ],
-    "no-underscore-dangle": "off",
-    "camelcase": [
-      "error",
-      {
-        "allow": ["_id"]
-      }
-    ]
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }]
   }
 }

@@ -17,7 +17,12 @@ router.post('/signin', celebrate({
     password: Joi.string().alphanum().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(200),
-    avatar: Joi.string().min(7),
+    avatar: Joi.string().uri({
+      scheme: [
+        // eslint-disable-next-line no-useless-escape
+        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/,
+      ],
+    }),
   }),
 }), postUser);
 

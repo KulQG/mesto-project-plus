@@ -6,7 +6,7 @@ import {
 } from '../utils/constants';
 import User from '../models/user';
 import NotFoundError from '../errors/notFound';
-import InvalidError from '../errors/invalidReq';
+import AuthError from '../errors/authError';
 
 export const getUsers = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -40,9 +40,16 @@ export const postUser = (req: Request, res: Response, next: NextFunction) => {
         email, password: h, name, about, avatar,
       })
         .then((user) => res.status(201).send({ user }))
-        .catch(() => {
-          next(new InvalidError('Переданы некорректные данные при создании пользователя'));
+        .catch((e) => {
+          errorHandler(e, next, {
+            invaild: 'Переданы некорректные данные при создании пользователя',
+          });
         });
+    })
+    .catch((e) => {
+      errorHandler(e, next, {
+        invaild: 'Переданы некорректные данные при создании пользователя',
+      });
     });
 };
 
@@ -82,7 +89,7 @@ const findUserByCredentials = (email: string, password: string) => User.findOne(
   .orFail()
   .then((user) => {
     if (!user) {
-      return Promise.reject(new Error(userAuthError));
+      return Promise.reject(new AuthError(userAuthError));
     }
     return bcrypt.compare(password, user.password)
       .then((matched) => {
@@ -90,11 +97,8 @@ const findUserByCredentials = (email: string, password: string) => User.findOne(
           return user;
         }
 
-        return Promise.reject(new Error(userAuthError));
+        return Promise.reject(new AuthError(userAuthError));
       });
-  })
-  .catch(() => {
-    throw new Error(userAuthError);
   });
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
@@ -102,8 +106,6 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
   findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) throw new NotFoundError(userNotFound);
-
       res.send({ token: jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' }) });
     })
     .catch(next);

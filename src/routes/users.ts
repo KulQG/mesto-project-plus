@@ -7,22 +7,11 @@ import {
 
 const router = Router();
 
-router.get('/', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
-}), getUsers);
+router.get('/', getUsers);
 
-router.get('/me', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
-}), getMeInfo);
+router.get('/me', getMeInfo);
 
 router.patch('/me', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().alphanum().min(20).max(200),
@@ -30,20 +19,19 @@ router.patch('/me', celebrate({
 }), patchUser);
 
 router.patch('/me/avatar', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
   body: Joi.object().keys({
-    avatar: Joi.string().alphanum().min(7).required(),
+    avatar: Joi.string().uri({
+      scheme: [
+        // eslint-disable-next-line no-useless-escape
+        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/,
+      ],
+    }).required(),
   }),
 }), patchAvatar);
 
 router.get('/:id', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().alphanum().required(),
-  }).unknown(true),
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().alphanum().length(24).required(),
   }),
 }), getUser);
 

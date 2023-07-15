@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   avatar: {
     type: String,
+    validate: {
+      validator(value: string) {
+        // eslint-disable-next-line no-useless-escape
+        const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/;
+        return urlPattern.test(value);
+      },
+      message: 'Invalid URL',
+    },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
 });

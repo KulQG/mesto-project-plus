@@ -4,6 +4,7 @@ import Card from '../models/card';
 import { errorHandler, cardNotFound } from '../utils/constants';
 
 export const getCards = (_req: Request, res: Response, next: NextFunction) => Card.find({})
+  .populate(['owner', 'likes'])
   .then((cards) => res.send({ cards }))
   .catch((err) => errorHandler(err, next, {}));
 
@@ -11,6 +12,7 @@ export const getCard = (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
 
   return Card.findById(id)
+    .populate(['owner', 'likes'])
     .then((card) => res.send({ card }))
     .catch((err) => errorHandler(err, next, {
       notFound: cardNotFound,
@@ -56,6 +58,7 @@ export const likeCard = (req: Request, res: Response, next: NextFunction) => {
 
   return Card.findByIdAndUpdate(id, { $addToSet: { likes: _id } }, { new: true })
     .orFail()
+    .populate(['owner', 'likes'])
     .then((card) => res.send({ card }))
     .catch((err) => errorHandler(err, next, {
       notFound: cardNotFound,
@@ -74,6 +77,7 @@ export const dislikeCard = (req: Request, res: Response, next: NextFunction) => 
     { new: true },
   )
     .orFail()
+    .populate(['owner', 'likes'])
     .then((card) => res.send({ card }))
     .catch((err) => errorHandler(err, next, {
       notFound: cardNotFound,
