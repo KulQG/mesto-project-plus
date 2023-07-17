@@ -8,6 +8,8 @@ export const cardNotFound = 'Карточка по указанному _id не
 export const userNotFound = 'Пользователь с указанным _id не найден';
 export const userAuthError = 'Неправильные почта или пароль';
 export const needAuth = 'Необходима авторизация';
+// eslint-disable-next-line no-useless-escape
+export const validUrlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/;
 
 type TMessages = {
   notFound?: string,

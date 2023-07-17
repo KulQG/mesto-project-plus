@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { celebrate, Joi } from 'celebrate';
 import { login, postUser } from '../controllers/users';
+import { validUrlPattern } from '../utils/constants';
 
 const router = Router();
 
@@ -19,8 +20,7 @@ router.post('/signin', celebrate({
     about: Joi.string().min(2).max(200),
     avatar: Joi.string().uri({
       scheme: [
-        // eslint-disable-next-line no-useless-escape
-        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/,
+        validUrlPattern,
       ],
     }),
   }),

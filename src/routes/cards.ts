@@ -3,6 +3,7 @@ import { celebrate, Joi } from 'celebrate';
 import {
   deleteCard, dislikeCard, getCard, getCards, likeCard, postCard,
 } from '../controllers/cards';
+import { validUrlPattern } from '../utils/constants';
 
 const router = Router();
 
@@ -23,8 +24,7 @@ router.post('/', celebrate({
       .required(),
     link: Joi.string().uri({
       scheme: [
-        // eslint-disable-next-line no-useless-escape
-        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/,
+        validUrlPattern,
       ],
     }).required(),
     owner: Joi.string().alphanum().length(24).required(),

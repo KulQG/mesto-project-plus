@@ -7,6 +7,7 @@ import auth from './middlewares/auth';
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
 import { requestLogger, errorLogger } from './middlewares/logger';
+import NotFoundError from './errors/notFound';
 
 const app = express();
 
@@ -24,9 +25,8 @@ app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
-app.use((_req: Request, res: Response) => {
-  res.status(404).send({ message: 'Not found' });
-});
+// eslint-disable-next-line no-unused-vars
+app.use((_req: Request, _res: Response) => new NotFoundError('Не найдено'));
 
 app.use(errorLogger);
 

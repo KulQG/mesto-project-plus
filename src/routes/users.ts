@@ -4,6 +4,7 @@ import {
   getMeInfo,
   getUser, getUsers, patchAvatar, patchUser,
 } from '../controllers/users';
+import { validUrlPattern } from '../utils/constants';
 
 const router = Router();
 
@@ -13,25 +14,25 @@ router.get('/me', getMeInfo);
 
 router.patch('/me', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().alphanum().min(20).max(200),
+    name: Joi.string().min(2).max(30).required(),
+    about: Joi
+      .string()
+      .alphanum()
+      .min(20)
+      .max(200)
+      .required(),
   }),
 }), patchUser);
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().uri({
-      scheme: [
-        // eslint-disable-next-line no-useless-escape
-        /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+(\-[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,})((\/[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?(#[-a-zA-Z0-9_.~:/?#[\]@!$&'()*+,;=]*)?)?$/,
-      ],
-    }).required(),
+    avatar: Joi.string().regex(validUrlPattern).required(),
   }),
 }), patchAvatar);
 
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24).required(),
+    id: Joi.string().hex().length(24).required(),
   }),
 }), getUser);
 
