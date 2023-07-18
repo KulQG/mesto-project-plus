@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { errors } from 'celebrate';
 import errorsMiddleware from './middlewares/errors';
@@ -26,7 +26,9 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 // eslint-disable-next-line no-unused-vars
-app.use((_req: Request, _res: Response) => new NotFoundError('Не найдено'));
+app.use((_req: Request, _res: Response, next: NextFunction) => {
+  next(new NotFoundError('Не найдено'));
+});
 
 app.use(errorLogger);
 

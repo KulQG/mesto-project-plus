@@ -22,12 +22,7 @@ router.post('/', celebrate({
       .min(2)
       .max(30)
       .required(),
-    link: Joi.string().uri({
-      scheme: [
-        validUrlPattern,
-      ],
-    }).required(),
-    owner: Joi.string().alphanum().length(24).required(),
+    link: Joi.string().regex(validUrlPattern).required(),
   }),
 }), postCard);
 
